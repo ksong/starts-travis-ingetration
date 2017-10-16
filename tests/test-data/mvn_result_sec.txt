@@ -1,0 +1,140 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building observer 1.18.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] >>> starts-maven-plugin:1.3:starts (default-cli) > [starts]test @ observer >>>
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:2.17:check (validate) @ observer ---
+[INFO] Starting audit...
+Audit done.
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.2.201409121644:prepare-agent (prepare-agent) @ observer ---
+[INFO] argLine set to -javaagent:/Users/kaisong/.m2/repository/org/jacoco/org.jacoco.agent/0.7.2.201409121644/org.jacoco.agent-0.7.2.201409121644-runtime.jar=destfile=/Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ observer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.0:compile (default-compile) @ observer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 12 source files to /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/target/classes
+[INFO] 
+[INFO] --- urm-maven-plugin:1.4.4:map (default) @ observer ---
+[INFO] observer.urm.puml already exists, file was not overwritten!
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ observer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.0:testCompile (default-testCompile) @ observer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 10 source files to /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/target/test-classes
+[WARNING] /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/test/java/com/iluwatar/observer/generic/ObserverTest.java: /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/test/java/com/iluwatar/observer/generic/ObserverTest.java uses unchecked or unsafe operations.
+[WARNING] /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/test/java/com/iluwatar/observer/generic/ObserverTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] >>> starts-maven-plugin:1.3:run (default-cli) > test-compile @ observer >>>
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:2.17:check (validate) @ observer ---
+[INFO] Starting audit...
+Audit done.
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.7.2.201409121644:prepare-agent (prepare-agent) @ observer ---
+[INFO] argLine set to -javaagent:/Users/kaisong/.m2/repository/org/jacoco/org.jacoco.agent/0.7.2.201409121644/org.jacoco.agent-0.7.2.201409121644-runtime.jar=destfile=/Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ observer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.0:compile (default-compile) @ observer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 12 source files to /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/target/classes
+[INFO] 
+[INFO] --- urm-maven-plugin:1.4.4:map (default) @ observer ---
+[INFO] observer.urm.puml already exists, file was not overwritten!
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ observer ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.0:testCompile (default-testCompile) @ observer ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 10 source files to /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/target/test-classes
+[WARNING] /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/test/java/com/iluwatar/observer/generic/ObserverTest.java: /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/test/java/com/iluwatar/observer/generic/ObserverTest.java uses unchecked or unsafe operations.
+[WARNING] /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/src/test/java/com/iluwatar/observer/generic/ObserverTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] <<< starts-maven-plugin:1.3:run (default-cli) < test-compile @ observer <<<
+[INFO] 
+[INFO] 
+[INFO] --- starts-maven-plugin:1.3:run (default-cli) @ observer ---
+objc[11644]: Class JavaLaunchHelper is implemented in both /Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk/Contents/Home/bin/java and /Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk/Contents/Home/jre/lib/libinstrument.dylib. One of the two will be used. Which one is undefined.
+INFO: ALL(count): 26
+INFO: UNREACHED(count): 0
+INFO: STARTS:Nodes: 2044
+INFO: STARTS:Edges: 14776
+INFO: STARTS:AffectedTests: 2
+INFO: STARTS:TotalTests: 9
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.18.1:test (default-test) @ observer ---
+[INFO] Surefire report directory: /Users/kaisong/Documents/UIUC/CS527/repo/temp/java-design-patterns/observer/target/surefire-reports
+[INFO] Using configured provider org.apache.maven.surefire.junitcore.JUnitCoreProvider
+[INFO] parallel='none', perCoreThreadCount=true, threadCount=0, useUnlimitedThreads=false, threadCountSuites=0, threadCountClasses=0, threadCountMethods=0, parallelOptimized=true
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+objc[11668]: Class JavaLaunchHelper is implemented in both /Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk/Contents/Home/jre/bin/java and /Library/Java/JavaVirtualMachines/jdk1.8.0_72.jdk/Contents/Home/jre/lib/libinstrument.dylib. One of the two will be used. Which one is undefined.
+Running com.iluwatar.observer.AppTest
+23:12:08.545 [main] INFO com.iluwatar.observer.Weather - The weather changed to rainy.
+23:12:08.551 [main] INFO com.iluwatar.observer.Orcs - The orcs are dripping wet.
+23:12:08.552 [main] INFO com.iluwatar.observer.Hobbits - The hobbits look for cover from the rain.
+23:12:08.552 [main] INFO com.iluwatar.observer.Weather - The weather changed to windy.
+23:12:08.552 [main] INFO com.iluwatar.observer.Orcs - The orc smell almost vanishes in the wind.
+23:12:08.552 [main] INFO com.iluwatar.observer.Hobbits - The hobbits hold their hats tightly in the windy weather.
+23:12:08.552 [main] INFO com.iluwatar.observer.Weather - The weather changed to cold.
+23:12:08.552 [main] INFO com.iluwatar.observer.Orcs - The orcs are freezing cold.
+23:12:08.552 [main] INFO com.iluwatar.observer.Hobbits - The hobbits are shivering in the cold weather.
+23:12:08.552 [main] INFO com.iluwatar.observer.Weather - The weather changed to sunny.
+23:12:08.552 [main] INFO com.iluwatar.observer.Orcs - The sun hurts the orcs' eyes.
+23:12:08.552 [main] INFO com.iluwatar.observer.Hobbits - The happy hobbits bade in the warm sun.
+23:12:08.552 [main] INFO com.iluwatar.observer.App - --Running generic version--
+23:12:08.554 [main] INFO com.iluwatar.observer.generic.GWeather - The weather changed to rainy.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GOrcs - The orcs are dripping wet.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GHobbits - The hobbits look for cover from the rain.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GWeather - The weather changed to windy.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GOrcs - The orc smell almost vanishes in the wind.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GHobbits - The hobbits hold their hats tightly in the windy weather.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GWeather - The weather changed to cold.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GOrcs - The orcs are freezing cold.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GHobbits - The hobbits are shivering in the cold weather.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GWeather - The weather changed to sunny.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GOrcs - The sun hurts the orcs' eyes.
+23:12:08.555 [main] INFO com.iluwatar.observer.generic.GHobbits - The happy hobbits bade in the warm sun.
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.114 sec - in com.iluwatar.observer.AppTest
+Running com.iluwatar.observer.OrcsTest
+23:12:08.593 [main] INFO com.iluwatar.observer.Orcs - The sun hurts the orcs' eyes.
+23:12:08.595 [main] INFO com.iluwatar.observer.Orcs - The orcs are dripping wet.
+LOGBACK: No context given for com.iluwatar.observer.utils.InMemoryAppender[null]
+23:12:08.597 [main] INFO com.iluwatar.observer.Orcs - The orc smell almost vanishes in the wind.
+LOGBACK: No context given for com.iluwatar.observer.utils.InMemoryAppender[null]
+23:12:08.597 [main] INFO com.iluwatar.observer.Orcs - The orcs are freezing cold.
+LOGBACK: No context given for com.iluwatar.observer.utils.InMemoryAppender[null]
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 sec - in com.iluwatar.observer.OrcsTest
+
+Results :
+
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] <<< starts-maven-plugin:1.3:starts (default-cli) < [starts]test @ observer <<<
+[INFO] 
+[INFO] 
+[INFO] --- starts-maven-plugin:1.3:starts (default-cli) @ observer ---
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 5.23 s
+[INFO] Finished at: 2017-10-09T23:12:08-05:00
+[INFO] Final Memory: 40M/861M
+[INFO] ------------------------------------------------------------------------
