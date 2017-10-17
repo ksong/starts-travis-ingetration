@@ -8,7 +8,7 @@ testMvnOutputMin() {
     	fail "There is an error running the testMvnOutputMin test"
     	return 1
     fi
-    assertEquals $result "83"
+    assertTrue "[[ $result =~  83 ]]"
 }
 
 testMvnOutputSecond() {
@@ -17,7 +17,7 @@ testMvnOutputSecond() {
     	fail "There is an error running the testMvnOutputSecond test"
     	return 1
     fi
-    assertEquals $result "5.23"
+    assertTrue "[[ $result =~  5\.23 ]]"
 }
 
 testRunMvnLocally() {
