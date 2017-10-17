@@ -3,7 +3,7 @@
 CUR_DIR="$( cd "$( dirname "$0" )" && pwd )";
 
 testMvnOutputMin() {
-    result=`$CUR_DIR/../generate-basic-stats.sh -l $CUR_DIR/test-data/mvn_result_min.txt -d ./`
+    result=`$CUR_DIR/../generate-basic-stats.sh -l $CUR_DIR/test-data/mvn_result_min.tx -d ./`
     if [[ $? != 0 ]]; then
     	fail "There is an error running the testMvnOutputMin test"
     	return 1
