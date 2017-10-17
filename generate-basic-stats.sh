@@ -1,22 +1,22 @@
-#!/bin/sh
+#!/bin/bash
+set -o pipefail
 
 usage() { 
-    echo "Usage: $0 [-h] [-t testfile] -d /path/to/repo/directory" 1>&2; exit 1; 
+    echo "Usage: $0 [-h] -l /path/to/mvn/log -d /path/to/repo/directory" 1>&2; exit 1; 
 }
 
-while getopts ":ht:d:" o; do
+while getopts ":hl:d:" o; do
     case "${o}" in
         h)
             echo "Collect statistics for basic statistics with STARTS."
             usage
             ;;
-        t)
-            echo "--- Running Testing mode ---"
-	    TEST=1;
-	    TEST_FILE=${OPTARG}
-            ;;
         d)
             REPO_DIR=${OPTARG}
+            ;;
+        l)
+            LOG_FILE=${OPTARG}
+            USE_LOG_FILE=1
             ;;
         *)
             usage
@@ -29,7 +29,7 @@ if [ -z "${REPO_DIR}" ]; then
     usage
 fi
 
-if [[ $TEST == 1 && -z "${TEST_FILE}" ]]; then
+if [[ $USE_LOG_FILE == 1 && -z "${LOG_FILE}" ]]; then
     usage
 fi
 
@@ -41,13 +41,22 @@ fi
 
 CUR_DIR="$( cd "$( dirname "$0" )" && pwd )";
 
-cd $REPO_DIR
 
-if [[ $TEST == 1 ]]; then
-    TIME=`cat $CUR_DIR/tests/test-data/$TEST_FILE|grep "Total time:"|cut -d" " -f4`
+if [ -z $LOG_FILE ]; then
+    cd $REPO_DIR
+    LOG_LOCAL_RUN="/tmp/local.log"
+    mvn test > $LOG_LOCAL_RUN
 else
-    TIME=`mvn test|grep "Total time:"|cut -d" " -f4`
+    LOG_LOCAL_RUN="${LOG_FILE}"
 fi
+
+
+
+TIME=`cat $LOG_LOCAL_RUN|grep --line-buffered "Total time:"|cut -d" " -f4`
+if [[ $? != 0 ]]; then
+    exit 1
+fi
+
 
 if [[ $TIME == *":"* ]]; then
     TIME=`echo $TIME | awk -F: '{ print ($1 * 60) + $2  }'`
