@@ -1,4 +1,4 @@
 language: generic 
 
-script
+script:
  - sh tests/testLocal.sh
