@@ -5,6 +5,12 @@ usage() {
     echo "Usage: $0 [-h] -l /path/to/mvn/log -d /path/to/repo/directory" 1>&2; exit 1; 
 }
 
+exitIfHasError() {
+    if [[ $? != 0 ]]; then
+	exit 1
+    fi
+}
+
 while getopts ":hl:d:" o; do
     case "${o}" in
         h)
@@ -50,17 +56,18 @@ else
     LOG_LOCAL_RUN="${LOG_FILE}"
 fi
 
+if [[ -z `cat $LOG_LOCAL_RUN|grep --line-buffered SUCCESS` ]]; then
+    echo "'mvn test' build failed."
+    exit 1;
+fi
+exitIfHasError;
 
+LOCAL_TIME=`cat $LOG_LOCAL_RUN|grep --line-buffered "Total time:"|cut -d" " -f4`
+exitIfHasError;
 
-TIME=`cat $LOG_LOCAL_RUN|grep --line-buffered "Total time:"|cut -d" " -f4`
-if [[ $? != 0 ]]; then
-    exit 1
+if [[ $LOCAL_TIME == *":"* ]]; then
+    LOCAL_TIME=`echo $LOCAL_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
 fi
 
 
-if [[ $TIME == *":"* ]]; then
-    TIME=`echo $TIME | awk -F: '{ print ($1 * 60) + $2  }'`
-fi
-
-
-echo $TIME
+echo $LOCAL_TIME

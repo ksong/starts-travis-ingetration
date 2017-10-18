@@ -29,6 +29,19 @@ testRunMvnLocally() {
     assertTrue "[[ $result =~ ^[-+]?[0-9]+(\.[0-9]+)?$ ]]"
 }
 
+testRunMvnTestFail() {
+	result=`$CUR_DIR/../generate-basic-stats.sh -d $CUR_DIR/test-data/`
+	assertEquals 1 $?
+    assertEquals  "$result" "'mvn test' build failed."
+}
+
+testMvnRunFail() {
+    result=`$CUR_DIR/../generate-basic-stats.sh -l $CUR_DIR/test-data/DO_NOT_EXIST -d ./`
+    assertEquals 1 $?
+}
+
+
+
 # Load shUnit2.
 
 . $CUR_DIR/../thirdparty/shunit2
