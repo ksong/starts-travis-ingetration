@@ -7,7 +7,7 @@ TEST_REPO_DIR="$TEMP_DIR/java-hello-proj"
 setUp() {
     if [ ! -d "$TEST_REPO_DIR" ]; then
 	cd $TEMP_DIR
-	git clone git@github.com:ksong/java-hello-proj.git
+	git clone https://github.com/ksong/java-hello-proj.git
     fi
 }
 

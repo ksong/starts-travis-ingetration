@@ -2,7 +2,7 @@ language: generic
 
 env:
   global:
-    - TMPDIR=/home/travis/build/ksong/
+    - TMPDIR=/tmp
 
 script:
  - tests/runAllTests.sh
