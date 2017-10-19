@@ -1,4 +1,8 @@
 language: generic 
 
+env:
+  global:
+    - TMPDIR=/tmp
+
 script:
  - tests/runAllTests.sh
