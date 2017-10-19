@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CUR_DIR="$( cd "$( dirname "$0" )" && pwd )";
-TEMP_DIR="$HOME"
+TEMP_DIR="$CUR_DIR/../../"
 TEST_REPO_DIR="$TEMP_DIR/java-hello-proj"
 
 setUp() {

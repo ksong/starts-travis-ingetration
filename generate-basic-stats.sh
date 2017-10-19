@@ -32,16 +32,18 @@ done
 shift $((OPTIND-1))
 
 if [ -z "${REPO_DIR}" ]; then
+    echo "Error: repository directory undefined." 1>&2;
     usage
 fi
 
 if [[ $USE_LOG_FILE == 1 && -z "${LOG_FILE}" ]]; then
+    echo "Error: mvn test log file localtion undefined." 1>&2;
     usage
 fi
 
 
 if [[ ! -d $REPO_DIR ]]; then
-    echo "Please specify a valid directory for the repo";
+    echo "$REPO_DIR is not a valid directory for the repo." 1>&2;
     usage;
 fi
 
@@ -57,7 +59,7 @@ else
 fi
 
 if [[ -z `cat $LOG_LOCAL_RUN|grep --line-buffered SUCCESS` ]]; then
-    echo "'mvn test' build failed."
+    echo "'mvn test' build failed.";
     exit 1;
 fi
 exitIfHasError;
