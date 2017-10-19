@@ -1,13 +1,14 @@
 #!/bin/bash
 
 CUR_DIR="$( cd "$( dirname "$0" )" && pwd )";
-TEST_REPO_DIR="/tmp/java-hello-proj"
+TEMP_DIR="$HOME"
+TEST_REPO_DIR="$TEMP_DIR/java-hello-proj"
 
 setUp() {
-	if [ ! -d "$TEST_REPO_DIR" ]; then
-		cd /tmp/
-  		git clone git@github.com:ksong/java-hello-proj.git
-	fi
+    if [ ! -d "$TEST_REPO_DIR" ]; then
+	cd $TEMP_DIR
+	git clone git@github.com:ksong/java-hello-proj.git
+    fi
 }
 
 tearDown(){
