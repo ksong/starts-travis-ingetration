@@ -85,14 +85,21 @@ fi
 # Enable Travis CI using Github API. Need to install TravisPy
 PRJOECT_NAME=${REPO_DIR##*/}
 if [[ -z $APIKEY ]]; then
-    python $CUR_DIR/enable-travis.py "ksong/$PRJOECT_NAME"
+    RESULT=`python $CUR_DIR/enable-travis-and-run.py "ksong/$PRJOECT_NAME"`
 else
-    python $CUR_DIR/enable-travis.py -k $APIKEY "ksong/$PRJOECT_NAME" 
+    RESULT=`python $CUR_DIR/enable-travis-and-run.py -k $APIKEY "ksong/$PRJOECT_NAME"`
 fi
 
-if [[ ! -z "$(ls -A ${REPO_DIR})" && ! -f ${REPO_DIR}/.travis.yml ]]; then
-    if [[ $VERBOSE == 1 ]]; then echo "creating .travis.yml file"; fi
-    echo "language: java" > ${REPO_DIR}/.travis.yml
+##No rebuild, then either create the .travis.yml or add a line of comment
+# then push to the repo to trigger travis CI build
+if [[ $RESULT != "REBUILT" ]]; then
+    if [[ ! -f ${REPO_DIR}/.travis.yml ]]; then
+        if [[ $VERBOSE == 1 ]]; then echo "creating .travis.yml file"; fi
+        echo "language: java" > ${REPO_DIR}/.travis.yml
+    else
+        if [[ $VERBOSE == 1 ]]; then echo ".travis.yml file exists, slightly modify it."; fi
+        echo "#Add this line to trigger Travis build" >> ${REPO_DIR}/.travis.yml
+    fi
     cd ${REPO_DIR}
 
     git add .travis.yml
@@ -100,11 +107,21 @@ if [[ ! -z "$(ls -A ${REPO_DIR})" && ! -f ${REPO_DIR}/.travis.yml ]]; then
     git config user.email "kaisong2@illinois.edu"
     git commit -m "added .travis.yml"
     git push origin master
-#else
-    #Travis is already enabled
-    #Use travispy to force a previous build
 fi
 
+## A travis build should just happened. Now, we save the test relevant logs to 
+#  /tmp/test_log.txt
+if [[ -z $APIKEY ]]; then
+    RESULT=`python $CUR_DIR/save-travis-build-log.py "ksong/$PRJOECT_NAME"`
+else
+    RESULT=`python $CUR_DIR/save-travis-build-log.py -k $APIKEY "ksong/$PRJOECT_NAME"`
+fi
 
+TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Total time:"|cut -d" " -f4`
+exitIfHasError;
 
-echo $LOCAL_TIME
+if [[ $TRAVIS_TEST_TIME == *":"* ]]; then
+    TRAVIS_TEST_TIME=`echo $TRAVIS_TEST_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
+fi
+
+echo $LOCAL_TIME,$TRAVIS_TEST_TIME
