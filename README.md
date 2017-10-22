@@ -6,10 +6,10 @@ The tool is written in Shell script with TravisPy Python API tool for Travis API
 
 # Dependencies
 
-Bash Shell
-shunit2 (included)
-Python/2.7.x
-TravisPy
+* Bash Shell
+* shunit2 (included)
+* Python/2.7.x
+* TravisPy (pip install travispy)
 
 # Instructions
 
