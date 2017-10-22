@@ -4,14 +4,14 @@ Scripts to automate statistics collection for STARTS and Travis CI integration.
 
 The tool is written in Shell script with TravisPy Python API tool for Travis API.
 
-# Dependencies
+## Dependencies
 
 * Bash Shell
 * shunit2 (included)
 * Python/2.7.x
 * TravisPy (pip install travispy)
 
-# Instructions
+## Instructions
 
 0. Install all the dependencies
 1. Make sure a Java Maven project is forked
