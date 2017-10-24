@@ -81,6 +81,13 @@ if [[ $LOCAL_TIME == *":"* ]]; then
     LOCAL_TIME=`echo $LOCAL_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
 fi
 
+if [[ $USE_LOG_FILE -eq 1 ]]; then
+    #When using log file, it's only for local mode
+    echo $LOCAL_TIME
+    exit 0;
+fi
+
+
 ##Setting to trigger Travis run
 # Enable Travis CI using Github API. Need to install TravisPy
 PRJOECT_NAME=${REPO_DIR##*/}

@@ -18,13 +18,16 @@ tearDown(){
 }
 
 testRunMvnLocally() {
+    echo "================"
+    echo "Note, please set your github APIKEY using GITHUB_APIKEY"
+    echo "================"
 	result=`$CUR_DIR/../generate-basic-stats.sh -d $TEST_REPO_DIR`
     echo "Running: $CUR_DIR/../generate-basic-stats.sh -d $TEST_REPO_DIR"
     if [[ $? != 0 ]]; then
     	fail "There is an error running the testMvnOutputSecond test"
     	return 1
     fi
-    assertTrue "[[ $result =~ ^[-+]?[0-9]+(\.[0-9]+)?$ ]]"
+    assertTrue "[[ $result =~ ^[0-9]+(\.[0-9]+)?,[0-9]+(\.[0-9]+)?$ ]]"
 }
 
 
