@@ -134,12 +134,15 @@ fi
 
 TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Total time:"|cut -d" " -f4`
 exitIfHasError;
-
-
-
 if [[ $TRAVIS_TEST_TIME == *":"* ]]; then
     TRAVIS_TEST_TIME=`echo $TRAVIS_TEST_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
 fi
 
-echo $LOCAL_TIME,$TRAVIS_TEST_TIME
+TRAVIS_BUILD_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Last Travis Build Time:"|cut -d" " -f5`
+exitIfHasError;
+if [[ $TRAVIS_BUILD_TIME == *":"* ]]; then
+    TRAVIS_BUILD_TIME=`echo $TRAVIS_BUILD_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
+fi
+
+echo $LOCAL_TIME,$TRAVIS_TEST_TIME,$TRAVIS_BUILD_TIME
 
