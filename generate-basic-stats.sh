@@ -24,7 +24,7 @@ while getopts ":hvl:d:k:" o; do
         d)
             REPO_DIR=${OPTARG}
             ;;
-        d)
+        k)
             APIKEY=${OPTARG}
             ;;
         l)
@@ -91,9 +91,17 @@ fi
 ##Setting to trigger Travis run
 # Enable Travis CI using Github API. Need to install TravisPy
 PRJOECT_NAME=${REPO_DIR##*/}
+if [[ -z $PRJOECT_NAME ]]; then
+    echo "Invalid project name: $PRJOECT_NAME"
+    echo "Please make sure the directory doesn't end with '/'"
+    exit 1;
+fi
+
 if [[ -z $APIKEY ]]; then
+    if [[ $VERBOSE == 1 ]]; then echo "python $CUR_DIR/enable-travis-and-run.py \"ksong/$PRJOECT_NAME\""; fi
     RESULT=`python $CUR_DIR/enable-travis-and-run.py "ksong/$PRJOECT_NAME"`
 else
+    if [[ $VERBOSE == 1 ]]; then echo "python $CUR_DIR/enable-travis-and-run.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
     RESULT=`python $CUR_DIR/enable-travis-and-run.py -k $APIKEY "ksong/$PRJOECT_NAME"`
 fi
 
@@ -127,8 +135,11 @@ fi
 TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Total time:"|cut -d" " -f4`
 exitIfHasError;
 
+
+
 if [[ $TRAVIS_TEST_TIME == *":"* ]]; then
     TRAVIS_TEST_TIME=`echo $TRAVIS_TEST_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
 fi
 
 echo $LOCAL_TIME,$TRAVIS_TEST_TIME
+
