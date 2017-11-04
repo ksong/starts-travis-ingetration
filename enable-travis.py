@@ -19,9 +19,3 @@ travis = TravisPy.github_auth(GITHUB_APIKEY)
 repo = travis.repo(project)
 repo.enable() # Switch is now on
 
-if repo.last_build_id is not None:
-	#build = travis.build(repo.last_build_id)
-	#build.restart()
-	print "REBUILT"
-else:
-	print "NO REBUILD"
