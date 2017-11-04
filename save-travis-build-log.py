@@ -15,6 +15,7 @@ if args.apikey:
 else:
 	GITHUB_APIKEY=os.environ['GITHUB_APIKEY']
 
+print "GITHUB_APIKEY: "
 print GITHUB_APIKEY
 travis = TravisPy.github_auth(GITHUB_APIKEY)
 repo = travis.repo(project)
