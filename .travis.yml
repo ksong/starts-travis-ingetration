@@ -4,5 +4,5 @@ env:
   global:
     - TMPDIR=/tmp
 
-script:
- - tests/runAllTests.sh
+#script:
+# - tests/runAllTests.sh
