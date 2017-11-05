@@ -140,6 +140,7 @@ for i in $(seq ${NUM_COMMITS} -1 1); do
             echo "Appending to file: ${OUTPUT_FILE}"  
             cd ${CUR_DIR}
             echo ${CUR_COMMIT},$TRAVIS_TEST_TIME,$TRAVIS_BUILD_TIME >> ${OUTPUT_FILE}
+            cd ${REPO_DIR}
         fi
     fi
 done 
