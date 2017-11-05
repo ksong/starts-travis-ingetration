@@ -83,8 +83,8 @@ if [[ ! -z ${OUTPUT_FILE} ]]; then
     echo "commit_hash,test_time,toal_time" > ${OUTPUT_FILE}
 fi
 
-
-CUR_DIR="$( cd "$( dirname "$0" )" && pwd )";
+CUR_DIR=`pwd`
+ROOT_DIR="$( cd "$( dirname "$0" )" && pwd )";
 
 ##Setting up to trigger Travis run
 # Enable Travis CI using Github API. Need to install TravisPy
@@ -96,11 +96,11 @@ if [[ -z $PRJOECT_NAME ]]; then
 fi
 
 if [[ -z $APIKEY ]]; then
-    if [[ $VERBOSE == 1 ]]; then echo "python $CUR_DIR/enable-travis-and-run.py \"ksong/$PRJOECT_NAME\""; fi
-    RESULT=`python $CUR_DIR/enable-travis.py "ksong/$PRJOECT_NAME"`
+    if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/enable-travis-and-run.py \"ksong/$PRJOECT_NAME\""; fi
+    RESULT=`python $ROOT_DIR/enable-travis.py "ksong/$PRJOECT_NAME"`
 else
-    if [[ $VERBOSE == 1 ]]; then echo "python $CUR_DIR/enable-travis-and-run.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
-    RESULT=`python $CUR_DIR/enable-travis.py -k $APIKEY "ksong/$PRJOECT_NAME"`
+    if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/enable-travis-and-run.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
+    RESULT=`python $ROOT_DIR/enable-travis.py -k $APIKEY "ksong/$PRJOECT_NAME"`
 fi
 
 #Roll back N commits and replay to the current one
@@ -116,11 +116,11 @@ for i in $(seq ${NUM_COMMITS} -1 1); do
         #  /tmp/test_log.txt
         mv /tmp/test_log.txt /tmp/test_log.txt.OLD
         if [[ -z $APIKEY ]]; then
-            echo "running python $CUR_DIR/save-travis-build-log.py \"ksong/$PRJOECT_NAME\""
-            python $CUR_DIR/save-travis-build-log.py "ksong/$PRJOECT_NAME"
+            echo "running python $ROOT_DIR/save-travis-build-log.py \"ksong/$PRJOECT_NAME\""
+            python $ROOT_DIR/save-travis-build-log.py "ksong/$PRJOECT_NAME"
         else
-            echo "running python $CUR_DIR/save-travis-build-log.py -k $APIKEY \"ksong/$PRJOECT_NAME\""
-            python $CUR_DIR/save-travis-build-log.py -k $APIKEY "ksong/$PRJOECT_NAME"
+            echo "running python $ROOT_DIR/save-travis-build-log.py -k $APIKEY \"ksong/$PRJOECT_NAME\""
+            python $ROOT_DIR/save-travis-build-log.py -k $APIKEY "ksong/$PRJOECT_NAME"
         fi
 
         TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Total time:"|cut -d" " -f4`
@@ -140,6 +140,14 @@ for i in $(seq ${NUM_COMMITS} -1 1); do
             echo "Appending to file: ${OUTPUT_FILE}"  
             cd ${CUR_DIR}
             echo ${CUR_COMMIT},$TRAVIS_TEST_TIME,$TRAVIS_BUILD_TIME >> ${OUTPUT_FILE}
+            cd ${REPO_DIR}
+        fi
+    else
+        echo ${CUR_COMMIT},SKIPPED,SKIPPED
+        if [[ ! -z ${OUTPUT_FILE} ]]; then
+            echo "Skipeed ${CUR_COMMIT}. Appending to file: ${OUTPUT_FILE}"  
+            cd ${CUR_DIR}
+            echo ${CUR_COMMIT},SKIPPED,SKIPPED >> ${OUTPUT_FILE}
             cd ${REPO_DIR}
         fi
     fi
