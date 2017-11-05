@@ -2,7 +2,7 @@
 set -o pipefail
 
 usage() { 
-    echo "Usage: $0 [-h] -v -l /path/to/mvn/log -d /path/to/repo/directory -n NUMBER_OF_COMMITS -k APIKEY" 1>&2; exit 1; 
+    echo "Usage: $0 [-h] -v -l /path/to/mvn/log -d /path/to/repo/directory -n NUMBER_OF_COMMITS -k APIKEY -o OUTPUT_FILE" 1>&2; exit 1; 
 }
 
 exitIfHasError() {
@@ -21,7 +21,7 @@ function promptIfProceed ()
     esac
 }
 
-while getopts ":hvl:d:k:n:" o; do
+while getopts ":hvl:d:k:n:o:" o; do
     case "${o}" in
         h)
             echo "Collect statistics for basic statistics with STARTS."
@@ -39,6 +39,9 @@ while getopts ":hvl:d:k:n:" o; do
             ;;
         n)
             NUM_COMMITS=${OPTARG}
+            ;;
+        o)
+            OUTPUT_FILE=${OPTARG}
             ;;
         l)
             LOG_FILE=${OPTARG}
@@ -75,8 +78,13 @@ if [[ -z $APIKEY ]]; then
     APIKEY=$GITHUB_APIKEY
 fi
 
-CUR_DIR="$( cd "$( dirname "$0" )" && pwd )";
+if [[ ! -z ${OUTPUT_FILE} ]]; then
+    echo "Writing to file: ${OUTPUT_FILE}"  
+    echo "commit_hash,test_time,toal_time" > ${OUTPUT_FILE}
+fi
 
+
+CUR_DIR="$( cd "$( dirname "$0" )" && pwd )";
 
 ##Setting up to trigger Travis run
 # Enable Travis CI using Github API. Need to install TravisPy
@@ -89,16 +97,15 @@ fi
 
 if [[ -z $APIKEY ]]; then
     if [[ $VERBOSE == 1 ]]; then echo "python $CUR_DIR/enable-travis-and-run.py \"ksong/$PRJOECT_NAME\""; fi
-    RESULT=`python $CUR_DIR/enable-travis-and-run.py "ksong/$PRJOECT_NAME"`
+    RESULT=`python $CUR_DIR/enable-travis.py "ksong/$PRJOECT_NAME"`
 else
     if [[ $VERBOSE == 1 ]]; then echo "python $CUR_DIR/enable-travis-and-run.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
-    RESULT=`python $CUR_DIR/enable-travis-and-run.py -k $APIKEY "ksong/$PRJOECT_NAME"`
+    RESULT=`python $CUR_DIR/enable-travis.py -k $APIKEY "ksong/$PRJOECT_NAME"`
 fi
 
-
-cd ${REPO_DIR}
 #Roll back N commits and replay to the current one
-for ((i=${NUM_COMMITS};i>=1;i--)); do
+cd ${REPO_DIR}
+for i in $(seq ${NUM_COMMITS} -1 1); do    
     CUR_COMMIT=`git log|grep commit|cut -d" " -f2|head -n ${i}|tail -n 1`
     echo "Force pushing commit ${CUR_COMMIT}"
     git push -f origin ${CUR_COMMIT}:master
@@ -128,12 +135,15 @@ for ((i=${NUM_COMMITS};i>=1;i--)); do
             TRAVIS_BUILD_TIME=`echo $TRAVIS_BUILD_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
         fi
 
-        echo ${NUM_COMMITS},$TRAVIS_TEST_TIME,$TRAVIS_BUILD_TIME
+        echo ${CUR_COMMIT},$TRAVIS_TEST_TIME,$TRAVIS_BUILD_TIME
+        if [[ ! -z ${OUTPUT_FILE} ]]; then
+            echo "Appending to file: ${OUTPUT_FILE}"  
+            cd ${CUR_DIR}
+            echo ${CUR_COMMIT},$TRAVIS_TEST_TIME,$TRAVIS_BUILD_TIME >> ${OUTPUT_FILE}
+        fi
     fi
-done
+done 
 
-
-exit 0;
 
 
 
