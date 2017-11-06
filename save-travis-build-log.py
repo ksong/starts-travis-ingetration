@@ -17,15 +17,24 @@ else:
 
 print "GITHUB_APIKEY: "
 print GITHUB_APIKEY
-travis = TravisPy.github_auth(GITHUB_APIKEY)
-repo = travis.repo(project)
 
-build = travis.build(repo.last_build_id)
-job = travis.job(build.job_ids[0])
-log = travis.log(job.log_id)
-test_content = log.get_archived_log().split(' T E S T S')[1]
-test_content = "Last Travis Build Time: " + str(repo.last_build_duration) + "\r\n" + test_content
-test_log_file = open("/tmp/test_log.txt", "w")
-test_log_file.write(test_content)
-test_log_file.close()
-
+try:
+	travis = TravisPy.github_auth(GITHUB_APIKEY)
+	repo = travis.repo(project)
+	build = travis.build(repo.last_build_id)
+	job = travis.job(build.job_ids[0])
+	log = travis.log(job.log_id)
+	log_parsed=log.get_archived_log().split(' T E S T S')
+	if len(log_parsed) != 2:
+		test_content = "Last Travis Build Time: SKIPPED\n" + "[INFO] Total time: SKIPPED\n"
+	else:
+		test_content = log_parsed[1]
+		test_content = "Last Travis Build Time: " + str(repo.last_build_duration) + "\n" + test_content
+	test_log_file = open("/tmp/test_log.txt", "w")
+	test_log_file.write(test_content)
+	test_log_file.close()
+except:
+	test_content = "Last Travis Build Time: ERROR\n" + "[INFO] Total time: ERROR\n"
+	test_log_file = open("/tmp/test_log.txt", "w")
+	test_log_file.write(test_content)
+	test_log_file.close()
