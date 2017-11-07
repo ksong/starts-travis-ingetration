@@ -1,8 +1,9 @@
 import os
 import argparse
+import time, datetime
 from travispy import TravisPy
 
-
+ts = time.time()
 
 parser = argparse.ArgumentParser(description='Enable Travis CI for the give project')
 parser.add_argument('project', help='github project name')
@@ -17,7 +18,10 @@ else:
 
 print "GITHUB_APIKEY: "
 print GITHUB_APIKEY
-
+header="\n\n------------------------------------------\n"
+header+="NEW Travis Run. Log Time: "
+header+=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+header+="\n------------------------------------------\n"
 try:
 	travis = TravisPy.github_auth(GITHUB_APIKEY)
 	repo = travis.repo(project)
@@ -31,10 +35,10 @@ try:
 		test_content = log_parsed[1]
 		test_content = "Last Travis Build Time: " + str(repo.last_build_duration) + "\n" + test_content
 	test_log_file = open("/tmp/test_log.txt", "w")
-	test_log_file.write(test_content)
+	test_log_file.write(header+test_content)
 	test_log_file.close()
 except:
 	test_content = "Last Travis Build Time: ERROR\n" + "[INFO] Total time: ERROR\n"
 	test_log_file = open("/tmp/test_log.txt", "w")
-	test_log_file.write(test_content)
+	test_log_file.write(header+test_content)
 	test_log_file.close()

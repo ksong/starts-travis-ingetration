@@ -25,14 +25,18 @@ try:
 	log = travis.log(job.log_id)
 	#print "build finished at:" + str(build.finished_at)
 	#print "job finished at:" + str(job.finished_at)
-
-	if job.finished_at is None and build.finished_at is None:
-		print "NOT_DONE"
+	
+	if job.finished_at is None or build.finished_at is None or job.started_at is None or build.started_at is None:
+		output_text = "NOT_DONE"
 	else:
-		print "DONE"
-	sys.exit(0)
+		output_text = "DONE"
+	output = open("/tmp/last-build-result.txt", "w")
+	output.write(output_text)
+	output.close()
 except:
-   	print "NOT_DONE"
+   	output = open("/tmp/last-build-result.txt", "w")
+	output.write("ERROR")
+	output.close()
 
 	
 

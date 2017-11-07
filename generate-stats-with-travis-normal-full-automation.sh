@@ -112,20 +112,22 @@ for i in $(seq ${NUM_COMMITS} -1 1); do
     ## A travis build should just happened. Now, we save the test relevant logs to 
     echo "A travis build should just be triggered." 
     echo "Please make sure the build finishes before proceeding. (Check the Travis Web Interface)"
-    echo "Sleeping 90 seonds to make sure build is triggered in Travis"
-    sleep 90
+    echo "Sleeping 120 seonds to make sure build is triggered in Travis"
+    sleep 120
 #    if promptIfProceed; then
     while [[ true ]]; do
+        rm -rf /tmp/last-build-result.txt
         if [[ -z $APIKEY ]]; then
             if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/check-last-build-status.py \"ksong/$PRJOECT_NAME\""; fi
-            RESULT=`python $ROOT_DIR/check-last-build-status.py "ksong/$PRJOECT_NAME"`
+            python $ROOT_DIR/check-last-build-status.py "ksong/$PRJOECT_NAME"
         else
             if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/check-last-build-status.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
-            RESULT=`python $ROOT_DIR/check-last-build-status.py -k $APIKEY "ksong/$PRJOECT_NAME"`
+            python $ROOT_DIR/check-last-build-status.py -k $APIKEY "ksong/$PRJOECT_NAME"
         fi
-        echo ""
+        RESULT = `cat /tmp/last-build-result.txt`
+        echo "==============="
         echo "Result: $RESULT"
-        echo ""        
+        echo "==============="        
         if [[ $RESULT == "NOT_DONE" ]]; then
             echo ""
             echo "Travis run is not done yet. Sleep for 30 seconds"
@@ -161,6 +163,8 @@ for i in $(seq ${NUM_COMMITS} -1 1); do
             fi
             echo ""
             echo "Moving on to the next commit"
+            DATE_STR=`date "+%Y-%m-%d-%H:%M:%S"`
+            cp /tmp/test_log.txt /tmp/test_log_${DATE_STR}.txt
             break;
         fi
     done
