@@ -105,8 +105,8 @@ fi
 
 #Roll back N commits and replay to the current one
 cd ${REPO_DIR}
-
-for CUR_COMMIT in `for i in $(seq ${NUM_COMMITS} -1 1); do    git log|grep commit|cut -d" " -f2|head -n ${i}|tail -n 1; done`; do
+AJDUSTED_NUM_COMMITS=`expr ${NUM_COMMITS} - 1`
+for CUR_COMMIT in `for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do git rev-parse HEAD~${i}; done`; do
     #For the oldest run updated pom.xml
     echo "Checking out commit ${CUR_COMMIT}"
     git checkout -b ${CUR_COMMIT} ${CUR_COMMIT}
@@ -149,6 +149,7 @@ for CUR_COMMIT in `for i in $(seq ${NUM_COMMITS} -1 1); do    git log|grep commi
             echo "Appending to file: ${OUTPUT_FILE}"  
             cd ${CUR_DIR}
             echo ${CUR_COMMIT},$TRAVIS_TEST_TIME,$TRAVIS_BUILD_TIME >> ${OUTPUT_FILE}
+            cd ${REPO_DIR}
         fi
     else
         echo ${CUR_COMMIT},SKIPPED,SKIPPED

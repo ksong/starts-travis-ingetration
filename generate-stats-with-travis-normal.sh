@@ -105,8 +105,9 @@ fi
 
 #Roll back N commits and replay to the current one
 cd ${REPO_DIR}
-for i in $(seq ${NUM_COMMITS} -1 1); do    
-    CUR_COMMIT=`git log|grep commit|cut -d" " -f2|head -n ${i}|tail -n 1`
+AJDUSTED_NUM_COMMITS=`expr ${NUM_COMMITS} - 1`
+for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do    
+    CUR_COMMIT=`git rev-parse HEAD~${i}`
     echo "Force pushing commit ${CUR_COMMIT}"
     git push -f origin ${CUR_COMMIT}:master
     ## A travis build should just happened. Now, we save the test relevant logs to 
