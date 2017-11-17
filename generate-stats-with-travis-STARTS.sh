@@ -113,12 +113,19 @@ for CUR_COMMIT in `for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do git rev-pars
         echo "Checking out commit ${CUR_COMMIT}"
         git checkout -b ${CUR_COMMIT} ${CUR_COMMIT}
         echo "Please update the pom.xml"
-        echo "Add this code to <plugins> section"
+        echo "Add this code to build <plugins> section"
         echo "<plugin>
-      <groupId>edu.illinois</groupId>
-      <artifactId>starts-maven-plugin</artifactId>
-      <version>1.3</version>
-    </plugin>"
+                <groupId>edu.illinois</groupId>
+                <artifactId>starts-maven-plugin</artifactId>
+                <version>1.3</version>
+              </plugin>"
+        echo "[Optional] if it complains about surefire, add these:"
+        echo "(In <build><pluginManagement></pluginManagement></build> section)"
+        echo "<plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <version>2.20.1</version>
+                </plugin>"
         if promptIfProceed; then
             emacs pom.xml
         fi

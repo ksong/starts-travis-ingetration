@@ -41,8 +41,9 @@ try:
 	test_log_file = open("/tmp/test_log.txt", "w")
 	test_log_file.write(header+test_content)
 	test_log_file.close()
-except:
+except Exception as e: 
+	print(e)
 	test_content = "Last Travis Build Time: ERROR\n" + "real	ERROR\n"
 	test_log_file = open("/tmp/test_log.txt", "w")
-	test_log_file.write(header+test_content)
+	test_log_file.write(header+test_content+"\n\n\n"+e)
 	test_log_file.close()
