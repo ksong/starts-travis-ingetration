@@ -84,7 +84,8 @@ if [[ ! -z ${OUTPUT_FILE} ]]; then
 fi
 
 
-CUR_DIR="$( cd "$( dirname "$0" )" && pwd )";
+CUR_DIR=`pwd`
+ROOT_DIR="$( cd "$( dirname "$0" )" && pwd )";
 
 ##Setting up to trigger Travis run
 # Enable Travis CI using Github API. Need to install TravisPy
@@ -96,27 +97,72 @@ if [[ -z $PRJOECT_NAME ]]; then
 fi
 
 if [[ -z $APIKEY ]]; then
-    if [[ $VERBOSE == 1 ]]; then echo "python $CUR_DIR/enable-travis-and-run.py \"ksong/$PRJOECT_NAME\""; fi
-    RESULT=`python $CUR_DIR/enable-travis.py "ksong/$PRJOECT_NAME"`
+    if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/enable-travis-and-run.py \"ksong/$PRJOECT_NAME\""; fi
+    RESULT=`python $ROOT_DIR/enable-travis.py "ksong/$PRJOECT_NAME"`
 else
-    if [[ $VERBOSE == 1 ]]; then echo "python $CUR_DIR/enable-travis-and-run.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
-    RESULT=`python $CUR_DIR/enable-travis.py -k $APIKEY "ksong/$PRJOECT_NAME"`
+    if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/enable-travis-and-run.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
+    RESULT=`python $ROOT_DIR/enable-travis.py -k $APIKEY "ksong/$PRJOECT_NAME"`
 fi
 
 #Roll back N commits and replay to the current one
 cd ${REPO_DIR}
 AJDUSTED_NUM_COMMITS=`expr ${NUM_COMMITS} - 1`
+STARTS_READY="no"
 for CUR_COMMIT in `for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do git rev-parse HEAD~${i}; done`; do
-    #For the oldest run updated pom.xml
-    echo "Checking out commit ${CUR_COMMIT}"
-    git checkout -b ${CUR_COMMIT} ${CUR_COMMIT}
-    #TODO: Update pom.xml to include starts
-    #TODO: Run mvn starts:starts to generate starts artifacts
-    #TODO: Added generated starts artifacts file to .travis.yml
-    #TODO: Update pom.xml to include starts
-    #TODO: Add and commit the changes locally
-    #TODO: Force to merge local branch to master
-    #TODO: Force push master to remote and trigger Travis build
+    if [[ $STARTS_READY == "no" ]]; then
+        echo "Checking out commit ${CUR_COMMIT}"
+        git checkout -b ${CUR_COMMIT} ${CUR_COMMIT}
+        echo "Please update the pom.xml"
+        echo "Add this code to <plugins> section"
+        echo "<plugin>
+      <groupId>edu.illinois</groupId>
+      <artifactId>starts-maven-plugin</artifactId>
+      <version>1.3</version>
+    </plugin>"
+        if promptIfProceed; then
+            emacs pom.xml
+        fi
+        echo "About to run mvn starts:starts to generate starts artifacts"
+        if promptIfProceed; then
+            mvn starts:starts
+        fi
+        echo "About to add starts artifacts to .travis.yml for caching"
+        echo "These are changes typically needed:"
+        echo "======================================"
+        echo "cache:"
+        echo "  directories:"
+        for line in `find .|grep .starts\$|sed "s/\.\///g"`; do echo "    - \$TRAVIS_BUILD_DIR/"$line; done
+        for line in `find .|grep jdeps-cache\$|sed "s/\.\///g"`; do echo "    - \$TRAVIS_BUILD_DIR/"$line; done
+        echo ""
+        echo "script:"
+        echo "  - echo \"=========STARTS INTEGRATION BLOCK==========\""
+        echo "  - time mvn starts:starts"
+        echo "  - echo \"=========STARTS INTEGRATION BLOCK==========\""
+        echo "======================================"
+        if promptIfProceed; then
+            emacs .travis.yml    
+        fi
+        echo "Please make sure both pom.xml and .travis.yml are updated correctly"
+        echo "About to commit the changes and push"
+        if promptIfProceed; then
+            git add .travis.yml pom.xml
+            git commit -m "Updated for STARTS integration"
+            STARTS_MOD_COMMIT=`git rev-parse HEAD~0`
+            echo "Force pushing commit ${STARTS_MOD_COMMIT}"
+            git push -f origin ${STARTS_MOD_COMMIT}:master
+        fi
+        STARTS_READY="yes"
+    else
+        echo "About to rebase the commit ${CUR_COMMIT}"
+        git rebase ${CUR_COMMIT}
+        echo "Please make sure the rebase finished successfully and fix conflicts if needed."
+        echo "About to push"
+        if promptIfProceed; then
+            STARTS_MOD_COMMIT=`git rev-parse HEAD~0`
+            echo "Force pushing commit ${STARTS_MOD_COMMIT}"
+            git push -f origin ${STARTS_MOD_COMMIT}:master
+        fi
+    fi
 
     ## A travis build should just happened. Now, we save the test relevant logs to 
     echo "A travis build should just be triggered." 
@@ -125,18 +171,16 @@ for CUR_COMMIT in `for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do git rev-pars
         #  /tmp/test_log.txt
         mv /tmp/test_log.txt /tmp/test_log.txt.OLD
         if [[ -z $APIKEY ]]; then
-            echo "running python $CUR_DIR/save-travis-build-log.py \"ksong/$PRJOECT_NAME\""
-            python $CUR_DIR/save-travis-build-log.py "ksong/$PRJOECT_NAME"
+            echo "running python $ROOT_DIR/save-travis-build-log-STARTS.py \"ksong/$PRJOECT_NAME\""
+            python $ROOT_DIR/save-travis-build-log-STARTS.py "ksong/$PRJOECT_NAME"
         else
-            echo "running python $CUR_DIR/save-travis-build-log.py -k $APIKEY \"ksong/$PRJOECT_NAME\""
-            python $CUR_DIR/save-travis-build-log.py -k $APIKEY "ksong/$PRJOECT_NAME"
+            echo "running python $ROOT_DIR/save-travis-build-log-STARTS.py -k $APIKEY \"ksong/$PRJOECT_NAME\""
+            python $ROOT_DIR/save-travis-build-log-STARTS.py -k $APIKEY "ksong/$PRJOECT_NAME"
         fi
 
-        TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Total time:"|cut -d" " -f4`
+        TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |egrep "real.*m.*s"|cut -d$'\t' -f2|cut -d's' -f1`
         exitIfHasError;
-        if [[ $TRAVIS_TEST_TIME == *":"* ]]; then
-            TRAVIS_TEST_TIME=`echo $TRAVIS_TEST_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
-        fi
+        TRAVIS_TEST_TIME=`echo $TRAVIS_TEST_TIME | awk -Fm '{ print ($1 * 60) + $2  }'`
 
         TRAVIS_BUILD_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Last Travis Build Time:"|cut -d" " -f5`
         exitIfHasError;

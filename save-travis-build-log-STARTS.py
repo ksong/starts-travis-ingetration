@@ -32,8 +32,8 @@ try:
 	build = travis.build(repo.last_build_id)
 	job = travis.job(build.job_ids[0])
 	log = travis.log(job.log_id)
-	log_parsed=log.get_archived_log().split(' T E S T S')
-	if len(log_parsed) != 2:
+	log_parsed=log.get_archived_log().split('$ echo "=========STARTS INTEGRATION BLOCK=========="')
+	if len(log_parsed) != 3:
 		test_content = "Last Travis Build Time: SKIPPED\n" + "[INFO] Total time: SKIPPED\n"
 	else:
 		test_content = log_parsed[1]
@@ -42,7 +42,7 @@ try:
 	test_log_file.write(header+test_content)
 	test_log_file.close()
 except:
-	test_content = "Last Travis Build Time: ERROR\n" + "[INFO] Total time: ERROR\n"
+	test_content = "Last Travis Build Time: ERROR\n" + "real	ERROR\n"
 	test_log_file = open("/tmp/test_log.txt", "w")
 	test_log_file.write(header+test_content)
 	test_log_file.close()
