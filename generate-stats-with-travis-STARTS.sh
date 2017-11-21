@@ -185,9 +185,11 @@ for CUR_COMMIT in `for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do git rev-pars
             python $ROOT_DIR/save-travis-build-log-STARTS.py -k $APIKEY "ksong/$PRJOECT_NAME"
         fi
 
-        TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |egrep "real.*m.*s"|cut -d$'\t' -f2|cut -d's' -f1`
+        TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Total time:"|cut -d" " -f4`
         exitIfHasError;
-        TRAVIS_TEST_TIME=`echo $TRAVIS_TEST_TIME | awk -Fm '{ print ($1 * 60) + $2  }'`
+        if [[ $TRAVIS_TEST_TIME == *":"* ]]; then
+            TRAVIS_TEST_TIME=`echo $TRAVIS_TEST_TIME | awk -F: '{ print ($1 * 60) + $2  }'`
+        fi
 
         TRAVIS_BUILD_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Last Travis Build Time:"|cut -d" " -f5`
         exitIfHasError;
