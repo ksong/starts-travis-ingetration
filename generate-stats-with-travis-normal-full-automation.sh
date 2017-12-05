@@ -124,7 +124,7 @@ for i in $(seq ${NUM_COMMITS} -1 1); do
             if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/check-last-build-status.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
             python $ROOT_DIR/check-last-build-status.py -k $APIKEY "ksong/$PRJOECT_NAME"
         fi
-        RESULT = `cat /tmp/last-build-result.txt`
+        RESULT=`cat /tmp/last-build-result.txt`
         echo "==============="
         echo "Result: $RESULT"
         echo "==============="        
