@@ -134,6 +134,8 @@ for i in $(seq ${NUM_COMMITS} -1 1); do
             echo ""
             sleep 30
         else
+            #Make sure the build it's done for more than 2 minutes
+            sleep 120
             rm -rf  /tmp/test_log.txt
             if [[ -z $APIKEY ]]; then
                 echo "running python $ROOT_DIR/save-travis-build-log.py \"ksong/$PRJOECT_NAME\""
