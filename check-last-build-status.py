@@ -30,6 +30,7 @@ try:
 		output_text = "NOT_DONE"
 	else:
 		output_text = "DONE"
+		build.cancel()
 	output = open("/tmp/last-build-result.txt", "w")
 	output.write(output_text)
 	output.close()

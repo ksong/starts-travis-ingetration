@@ -2,7 +2,7 @@
 set -o pipefail
 
 usage() { 
-    echo "Usage: $0 [-h] -v -l /path/to/mvn/log -d /path/to/repo/directory -n NUMBER_OF_COMMITS -k APIKEY -o OUTPUT_FILE" 1>&2; exit 1; 
+    echo "Usage: $0 [-h] -v -l /path/to/mvn/log -d /path/to/repo/directory -b BRANCH -n NUMBER_OF_COMMITS -k APIKEY -o OUTPUT_FILE" 1>&2; exit 1; 
 }
 
 exitIfHasError() {
@@ -21,7 +21,7 @@ function promptIfProceed ()
     esac
 }
 
-while getopts ":hvl:d:k:n:o:" o; do
+while getopts ":hvl:d:k:n:o:b:" o; do
     case "${o}" in
         h)
             echo "Collect statistics for basic statistics with STARTS."
@@ -42,6 +42,9 @@ while getopts ":hvl:d:k:n:o:" o; do
             ;;
         o)
             OUTPUT_FILE=${OPTARG}
+            ;;
+        b)
+            BRANCH_NAME=${OPTARG}
             ;;
         l)
             LOG_FILE=${OPTARG}
@@ -76,6 +79,10 @@ fi
 
 if [[ -z $APIKEY ]]; then
     APIKEY=$GITHUB_APIKEY
+fi
+
+if [[ -z $BRANCH_NAME ]]; then
+    BRANCH_NAME="master"
 fi
 
 if [[ ! -z ${OUTPUT_FILE} ]]; then

@@ -23,7 +23,9 @@ else:
 print "GITHUB_APIKEY: "
 print GITHUB_APIKEY
 header="\n\n------------------------------------------\n"
-header+="NEW Travis Run. Log Time: "
+header+="NEW Travis Run for project: "
+header+=project
+header+="\nLog Time: "
 header+=datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 header+="\n------------------------------------------\n"
 try:
@@ -33,10 +35,10 @@ try:
 	job = travis.job(build.job_ids[0])
 	log = travis.log(job.log_id)
 	log_parsed=log.get_archived_log().split(' T E S T S')
-	if len(log_parsed) != 2:
+	if len(log_parsed) < 2:
 		test_content = "Last Travis Build Time: SKIPPED\n" + "[INFO] Total time: SKIPPED\n"
 	else:
-		test_content = log_parsed[1]
+		test_content = log_parsed[-1]
 		test_content = "Last Travis Build Time: " + str(repo.last_build_duration) + "\n" + test_content
 	test_log_file = open("/tmp/test_log.txt", "w")
 	test_log_file.write(header+test_content)

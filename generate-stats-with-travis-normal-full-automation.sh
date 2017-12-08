@@ -2,7 +2,7 @@
 set -o pipefail
 
 usage() { 
-    echo "Usage: $0 [-h] -v -l /path/to/mvn/log -d /path/to/repo/directory -n NUMBER_OF_COMMITS -k APIKEY -o OUTPUT_FILE" 1>&2; exit 1; 
+    echo "Usage: $0 [-h] -v -l /path/to/mvn/log -d /path/to/repo/directory -b BRANCHNAME -n NUMBER_OF_COMMITS -k APIKEY -o OUTPUT_FILE" 1>&2; exit 1; 
 }
 
 exitIfHasError() {
@@ -21,7 +21,7 @@ function promptIfProceed ()
     esac
 }
 
-while getopts ":hvl:d:k:n:o:" o; do
+while getopts ":hvl:d:k:n:o:b:" o; do
     case "${o}" in
         h)
             echo "Collect statistics for basic statistics with STARTS."
@@ -43,11 +43,15 @@ while getopts ":hvl:d:k:n:o:" o; do
         o)
             OUTPUT_FILE=${OPTARG}
             ;;
+        b)
+            BRANCH_NAME=${OPTARG}
+            ;;
         l)
             LOG_FILE=${OPTARG}
             USE_LOG_FILE=1
             ;;
         *)
+	    echo "Invalid args"
             usage
             ;;
     esac
@@ -76,6 +80,10 @@ fi
 
 if [[ -z $APIKEY ]]; then
     APIKEY=$GITHUB_APIKEY
+fi
+
+if [[ -z $BRANCH_NAME ]]; then
+    BRANCH_NAME="master"
 fi
 
 if [[ ! -z ${OUTPUT_FILE} ]]; then
@@ -108,7 +116,7 @@ cd ${REPO_DIR}
 for i in $(seq ${NUM_COMMITS} -1 1); do    
     CUR_COMMIT=`git log|grep commit|cut -d" " -f2|head -n ${i}|tail -n 1`
     echo "Force pushing commit ${CUR_COMMIT}"
-    git push -f origin ${CUR_COMMIT}:master
+    git push -f origin ${CUR_COMMIT}:$BRANCH_NAME
     ## A travis build should just happened. Now, we save the test relevant logs to 
     echo "A travis build should just be triggered." 
     echo "Please make sure the build finishes before proceeding. (Check the Travis Web Interface)"
@@ -166,7 +174,7 @@ for i in $(seq ${NUM_COMMITS} -1 1); do
             echo ""
             echo "Moving on to the next commit"
             DATE_STR=`date "+%Y-%m-%d-%H:%M:%S"`
-            cp /tmp/test_log.txt /tmp/test_log_${DATE_STR}.txt
+            cp /tmp/test_log.txt /tmp/test_log_${PRJOECT_NAME}_${DATE_STR}.txt
             break;
         fi
     done
