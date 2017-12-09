@@ -30,7 +30,7 @@ try:
 	travis = TravisPy.github_auth(GITHUB_APIKEY)
 	repo = travis.repo(project)
 	build = travis.build(repo.last_build_id)
-	job = travis.job(build.job_ids[0])
+	job = travis.job(build.job_ids[-1])
 	log = travis.log(job.log_id)
 	log_parsed=log.get_archived_log().split('$ echo "=========STARTS INTEGRATION BLOCK=========="')
 	if len(log_parsed) != 3:
