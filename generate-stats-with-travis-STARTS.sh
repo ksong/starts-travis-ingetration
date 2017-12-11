@@ -96,26 +96,27 @@ ROOT_DIR="$( cd "$( dirname "$0" )" && pwd )";
 
 ##Setting up to trigger Travis run
 # Enable Travis CI using Github API. Need to install TravisPy
-PRJOECT_NAME=${REPO_DIR##*/}
-if [[ -z $PRJOECT_NAME ]]; then
-    echo "Invalid project name: $PRJOECT_NAME"
+PROJECT_NAME=${REPO_DIR##*/}
+if [[ -z $PROJECT_NAME ]]; then
+    echo "Invalid project name: $PROJECT_NAME"
     echo "Please make sure the directory doesn't end with '/'"
     exit 1;
 fi
 
 if [[ -z $APIKEY ]]; then
-    if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/enable-travis-and-run.py \"ksong/$PRJOECT_NAME\""; fi
-    RESULT=`python $ROOT_DIR/enable-travis.py "ksong/$PRJOECT_NAME"`
+    if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/enable-travis-and-run.py \"ksong/$PROJECT_NAME\""; fi
+    RESULT=`python $ROOT_DIR/enable-travis.py "ksong/$PROJECT_NAME"`
 else
-    if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/enable-travis-and-run.py -k $APIKEY \"ksong/$PRJOECT_NAME\""; fi
-    RESULT=`python $ROOT_DIR/enable-travis.py -k $APIKEY "ksong/$PRJOECT_NAME"`
+    if [[ $VERBOSE == 1 ]]; then echo "python $ROOT_DIR/enable-travis-and-run.py -k $APIKEY \"ksong/$PROJECT_NAME\""; fi
+    RESULT=`python $ROOT_DIR/enable-travis.py -k $APIKEY "ksong/$PROJECT_NAME"`
 fi
 
 #Roll back N commits and replay to the current one
 cd ${REPO_DIR}
 AJDUSTED_NUM_COMMITS=`expr ${NUM_COMMITS} - 1`
 STARTS_READY="no"
-for CUR_COMMIT in `for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do git rev-parse HEAD~${i}; done`; do
+#for CUR_COMMIT in `for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do git rev-parse HEAD~${i}; done`; do
+for CUR_COMMIT in `cat $ROOT_DIR/run/$PROJECT_NAME/${PROJECT_NAME}_testall.csv|cut -d, -f1|tail -n ${NUM_COMMITS}`; do
     if [[ $STARTS_READY == "no" ]]; then
         echo "Checking out commit ${CUR_COMMIT}"
         git checkout -b ${CUR_COMMIT} ${CUR_COMMIT}
@@ -185,11 +186,11 @@ for CUR_COMMIT in `for i in $(seq ${AJDUSTED_NUM_COMMITS} -1 0); do git rev-pars
         #  /tmp/test_log.txt
         mv /tmp/test_log.txt /tmp/test_log.txt.OLD
         if [[ -z $APIKEY ]]; then
-            echo "running python $ROOT_DIR/save-travis-build-log-STARTS.py \"ksong/$PRJOECT_NAME\""
-            python $ROOT_DIR/save-travis-build-log-STARTS.py "ksong/$PRJOECT_NAME"
+            echo "running python $ROOT_DIR/save-travis-build-log-STARTS.py \"ksong/$PROJECT_NAME\""
+            python $ROOT_DIR/save-travis-build-log-STARTS.py "ksong/$PROJECT_NAME"
         else
-            echo "running python $ROOT_DIR/save-travis-build-log-STARTS.py -k $APIKEY \"ksong/$PRJOECT_NAME\""
-            python $ROOT_DIR/save-travis-build-log-STARTS.py -k $APIKEY "ksong/$PRJOECT_NAME"
+            echo "running python $ROOT_DIR/save-travis-build-log-STARTS.py -k $APIKEY \"ksong/$PROJECT_NAME\""
+            python $ROOT_DIR/save-travis-build-log-STARTS.py -k $APIKEY "ksong/$PROJECT_NAME"
         fi
 
         TRAVIS_TEST_TIME=`cat /tmp/test_log.txt |grep --line-buffered "Total time:"|cut -d" " -f4`
