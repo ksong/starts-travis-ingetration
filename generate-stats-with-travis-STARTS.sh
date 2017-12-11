@@ -164,7 +164,7 @@ for CUR_COMMIT in `cat $ROOT_DIR/run/$PROJECT_NAME/${PROJECT_NAME}_testall.csv|c
             git commit -m "Updated for STARTS integration"
             STARTS_MOD_COMMIT=`git rev-parse HEAD~0`
             echo "Force pushing commit ${STARTS_MOD_COMMIT}"
-            git push -f origin ${STARTS_MOD_COMMIT}:master
+            git push -f origin ${STARTS_MOD_COMMIT}:$BRANCH_NAME
         fi
         STARTS_READY="yes"
     else
@@ -175,7 +175,7 @@ for CUR_COMMIT in `cat $ROOT_DIR/run/$PROJECT_NAME/${PROJECT_NAME}_testall.csv|c
         if promptIfProceed; then
             STARTS_MOD_COMMIT=`git rev-parse HEAD~0`
             echo "Force pushing commit ${STARTS_MOD_COMMIT}"
-            git push -f origin ${STARTS_MOD_COMMIT}:master
+            git push -f origin ${STARTS_MOD_COMMIT}:$BRANCH_NAME
         fi
     fi
 
